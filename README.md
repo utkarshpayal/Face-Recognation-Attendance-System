@@ -1,63 +1,58 @@
-#Face Recognition Attendance System
+# Face Recognition and Attendance System
 
-This is a Python script that implements a Face Recognition Attendance System using OpenCV, tkinter, face_recognition library, and MongoDB.
-Installation
+This is a Python application that performs face recognition using the `face_recognition` library and maintains attendance records. It captures images from a camera feed, recognizes faces, and marks attendance. The attendance data can be saved to an Excel file.
 
-To run this script, you need to have the following dependencies installed:
+## Prerequisites
 
-    OpenCV (cv2)
-    tkinter
-    PIL (Image, ImageTk)
-    face_recognition
-    pickle
-    pymongo
-    datetime
-    json
+Before running the application, make sure you have the following libraries installed:
 
-You can install these dependencies using pip:
+- OpenCV (`cv2`)
+- Tkinter (`tk`)
+- Pillow (`PIL`)
+- `face_recognition`
+- `pickle`
+- `datetime`
+- `smtplib`
+- `email.mime.multipart`
+- `email.mime.text`
+- `threading`
+- `queue`
+- `os`
+- `pandas`
 
-pip install opencv-python
-pip install tkinter
-pip install pillow
-pip install face-recognition
-pip install pymongo
+You can install these dependencies using the following command:
+
+
+```pip install opencv-python-headless pillow face-recognition pandas```
+
 
 Usage
 
-    Ensure that you have MongoDB installed and running on your system.
 
-    Update the MongoDB connection details in the script by modifying the following variables:
-        mongo_host: MongoDB host URL (default: "mongodb://localhost:27017")
-        mongo_port: MongoDB port number (default: 27017)
-        mongo_db: MongoDB database name (default: "face_recognition")
-        mongo_collection: MongoDB collection name for storing captured images (default: "captured_images")
+Clone this repository to your local machine.
+Open a terminal and navigate to the project directory.
+Run the following command to start the application:
 
-    Run the script using the following command:
+```python main.py```
 
-    python script_name.py
+The application will open with a GUI. Follow the on-screen instructions to perform the following actions:
+Capture an image of a person's face for recognition and attendance.
+Display the current attendance records.
+Save attendance data to an Excel file.
+Exit the application.
+Important Notes
+The application uses Gmail to send email notifications. Make sure to replace the sender_email and sender_password variables with your own Gmail credentials. Also, set the receiver_email to the desired recipient's email address.
 
-    The script will open a GUI window displaying the video feed from the default camera. It will recognize faces in real-time and mark attendance if a recognized face is detected.
+Known face encodings and names are stored in the known_faces.pkl file. If the file does not exist, it will be created when you save the first person's name and face.
 
-    To capture an image for attendance, click the "Capture Image" button. A password window will appear where you need to enter the password (default: "password"). After entering the correct password, the script will capture an image and prompt you to enter the name for the captured image in a new window.
+To prevent duplicate attendance entries, a time delay of 10 seconds is applied for each person.
 
-    The captured image will be saved to disk as "captured_image.jpg" and also stored in the MongoDB collection specified in the connection details.
+The captured images are stored in the captured_images directory.
 
-    The attendance count for each recognized face will be displayed in the GUI window.
+Attendance data is saved to an Excel file named attendance.xlsx.
 
-    To close the camera and exit the script, click the "Close" button or close the GUI window.
+Make sure to grant camera access to the application when prompted.
 
-Additional Notes
+License
+This project is licensed under the MIT License.
 
-    The script uses a known_faces.pkl file to store the encodings and names of known faces. If the file does not exist, it will be created automatically when known faces are added.
-
-    The script saves the attendance data to "attendance.json" and last attendance data to "last_attendance.json" files. These files store the attendance count and last attendance time for each recognized face. If the files do not exist, they will be created automatically.
-
-    The attendance data is loaded at the start of the script, and the last attendance data is checked to prevent duplicate attendance within 24 hours.
-
-    You can adjust the tolerance value in the recognize_faces() function to control the face recognition accuracy. Lower tolerance values make face recognition stricter, while higher values make it more lenient.
-
-    The script uses tkinter for creating a simple GUI to display the video feed and attendance information.
-
-    Make sure to have a webcam or camera connected to your system for capturing the video feed.
-
-Feel free to customize the script as per your requirements and extend its functionality.
