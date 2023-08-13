@@ -22,7 +22,7 @@ attendance = {}
 last_attendance = {}
 sender_email = "t8196382@gmail.com"
 sender_password = "hexltljbdqfuwlov"
-receiver_email = "utkarsh12march2004@gmail.com"
+receiver_email = " "
 
 # Function to load known face encodings and names from a file
 def load_known_faces():
