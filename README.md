@@ -1,58 +1,80 @@
-# Face Recognition and Attendance System
+# Face Recognition Attendance System
 
-This is a Python application that performs face recognition using the `face_recognition` library and maintains attendance records. It captures images from a camera feed, recognizes faces, and marks attendance. The attendance data can be saved to an Excel file.
+A Python desktop application that recognises faces from a webcam feed, marks attendance for known people, sends an email notification when a known person is seen, and can export the attendance counts to an Excel file. The GUI is built with Tkinter and face recognition is done with the `face_recognition` library.
 
-## Prerequisites
+## Features
 
-Before running the application, make sure you have the following libraries installed:
+- Live webcam feed in a Tkinter window, with a green box and name drawn around each detected face (`Unknown` for unrecognised faces).
+- **Capture Image**: captures the current frame, asks for a name, computes the face encoding and adds it to the known-faces store.
+- Automatic attendance: each time a known face is recognised its attendance count is incremented, with a 10-second cooldown per person to avoid duplicate entries.
+- Email notification ("Match Found") via Gmail SMTP whenever attendance is marked.
+- **Show Attendance**: opens a window listing each name and its count.
+- **Save Attendance to Excel**: writes the counts into `attendance.xlsx`, in a column named after the current date (e.g. `11Nov`).
+- **Exit**: releases the camera and closes the app.
 
-- OpenCV (`cv2`)
-- Tkinter (`tk`)
-- Pillow (`PIL`)
-- `face_recognition`
-- `pickle`
-- `datetime`
-- `smtplib`
-- `email.mime.multipart`
-- `email.mime.text`
-- `threading`
-- `queue`
-- `os`
-- `pandas`
+## Tech stack
 
-You can install these dependencies using the following command:
+- Python 3
+- [OpenCV](https://pypi.org/project/opencv-python/) (`cv2`) for camera capture and drawing
+- [face_recognition](https://pypi.org/project/face-recognition/) (requires `dlib`) for face detection and encodings
+- Tkinter and [Pillow](https://pypi.org/project/pillow/) for the GUI
+- [pandas](https://pypi.org/project/pandas/) for the Excel export
+- Standard library: `pickle`, `smtplib`, `email`, `threading`, `queue`, `datetime`, `os`
 
+## Installation
 
-```pip install opencv-python-headless pillow face-recognition pandas```
+```sh
+git clone https://github.com/utkarshpayal/Face-Recognation-Attendance-System.git
+cd Face-Recognation-Attendance-System
+pip install opencv-python pillow face-recognition pandas openpyxl
+```
 
+Notes:
 
-Usage
+- Tkinter ships with most Python installers; on some Linux distributions it is a separate package (e.g. `python3-tk`).
+- `face-recognition` depends on `dlib`, which needs CMake and a C++ compiler to build.
+- `openpyxl` is needed by pandas to read/write `.xlsx` files.
 
+## Configuration
 
-Clone this repository to your local machine.
-Open a terminal and navigate to the project directory.
-Run the following command to start the application:
+Email settings are hard-coded as variables near the top of `main.py`; there are no environment variables or config files. Set them before running:
 
-```python main.py```
+| Variable | Purpose |
+| --- | --- |
+| `sender_email` | Gmail address used to send notifications |
+| `sender_password` | Password / app password for that Gmail account |
+| `receiver_email` | Address that receives the "Match Found" emails |
 
-The application will open with a GUI. Follow the on-screen instructions to perform the following actions:
-Capture an image of a person's face for recognition and attendance.
-Display the current attendance records.
-Save attendance data to an Excel file.
-Exit the application.
-Important Notes
-The application uses Gmail to send email notifications. Make sure to replace the sender_email and sender_password variables with your own Gmail credentials. Also, set the receiver_email to the desired recipient's email address.
+Gmail SMTP (`smtp.gmail.com:587`, STARTTLS) is used. Do not commit real credentials to the repository; consider loading them from environment variables instead.
 
-Known face encodings and names are stored in the known_faces.pkl file. If the file does not exist, it will be created when you save the first person's name and face.
+The camera used is device `0` (`cv2.VideoCapture(0)`).
 
-To prevent duplicate attendance entries, a time delay of 10 seconds is applied for each person.
+## Usage
 
-The captured images are stored in the captured_images directory.
+```sh
+python main.py
+```
 
-Attendance data is saved to an Excel file named attendance.xlsx.
+1. Click **Capture Image** while a person is in front of the camera, type their name and click **Save**.
+2. When that person appears in the feed again, their attendance is counted and an email is sent.
+3. Use **Show Attendance** to view counts or **Save Attendance to Excel** to export them.
+4. Click **Exit** to close the camera and the app.
 
-Make sure to grant camera access to the application when prompted.
+## Files created at runtime
 
-License
-This project is licensed under the MIT License.
+| Path | Contents |
+| --- | --- |
+| `known_faces.pkl` | Pickled face encodings and names (loaded on start-up if present) |
+| `captured_image.jpg` | The most recent captured frame |
+| `captured_images/<name>/` | Saved images for each registered person |
+| `attendance.xlsx` | Exported attendance table |
 
+Attendance counts are kept in memory and are only persisted when you click **Save Attendance to Excel**.
+
+## Other docs
+
+`Learn.md` describes an earlier version of the project (MongoDB storage and a password prompt before capturing). Neither is used by the current `main.py`.
+
+## License
+
+This project is licensed under the [Apache License 2.0](LICENSE).
